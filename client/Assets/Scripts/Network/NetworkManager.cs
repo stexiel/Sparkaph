@@ -187,7 +187,7 @@ namespace Sparkaph.Network
                 };
 
                 var bytes = MessagePackSerializer.Serialize(envelope);
-                websocket.SendBinary(bytes);
+                websocket.Send(bytes);
             }
             catch (Exception e)
             {
