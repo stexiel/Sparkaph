@@ -1,0 +1,64 @@
+name: Unity Build
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'client/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'client/**'
+
+jobs:
+  build-unity:
+    name: Build Unity Project
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        lfs: true
+
+    - name: Cache Library
+      uses: actions/cache@v3
+      with:
+        path: client/Library
+        key: Library-${{ hashFiles('client/Assets/**', 'client/Packages/**', 'client/ProjectSettings/**') }}
+        restore-keys: |
+          Library-
+
+    - name: Build Unity Project (Android)
+      uses: game-ci/unity-builder@v2
+      env:
+        UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      with:
+        projectPath: client
+        targetPlatform: Android
+        buildName: Sparkaph
+        buildsPath: builds
+
+    - name: Upload Android Build
+      uses: actions/upload-artifact@v3
+      with:
+        name: sparkaph-android
+        path: builds/Android
+
+    - name: Build Unity Project (iOS)
+      if: runner.os == 'macOS'
+      uses: game-ci/unity-builder@v2
+      env:
+        UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      with:
+        projectPath: client
+        targetPlatform: iOS
+        buildName: Sparkaph
+        buildsPath: builds
+
+    - name: Upload iOS Build
+      if: runner.os == 'macOS'
+      uses: actions/upload-artifact@v3
+      with:
+        name: sparkaph-ios
+        path: builds/iOS

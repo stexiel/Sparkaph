@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sparkaph
+  labels:
+    name: sparkaph
+    environment: production
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sparkaph-secrets
+  namespace: sparkaph
+type: Opaque
+stringData:
+  postgres-host: "postgres.sparkaph.svc.cluster.local"
+  postgres-user: "sparkaph"
+  postgres-password: "CHANGE_ME_IN_PRODUCTION"
+  redis-host: "redis.sparkaph.svc.cluster.local"
+  redis-password: "CHANGE_ME_IN_PRODUCTION"
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: sparkaph-quota
+  namespace: sparkaph
+spec:
+  hard:
+    requests.cpu: "50"
+    requests.memory: 100Gi
+    limits.cpu: "100"
+    limits.memory: 200Gi
+    persistentvolumeclaims: "10"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: sparkaph-limits
+  namespace: sparkaph
+spec:
+  limits:
+  - max:
+      cpu: "2"
+      memory: 4Gi
+    min:
+      cpu: 50m
+      memory: 64Mi
+    default:
+      cpu: 500m
+      memory: 512Mi
+    defaultRequest:
+      cpu: 100m
+      memory: 128Mi
+    type: Container
