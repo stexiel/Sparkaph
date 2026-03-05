@@ -5,16 +5,14 @@
     "com.unity.modules.imgui": "1.0.0",
     "com.unity.modules.jsonserialize": "1.0.0",
     "com.unity.modules.ui": "1.0.0",
-    "com.endel.nativewebsocket": "1.1.4",
-    "com.neuecc.messagepack": "https://github.com/neuecc/MessagePack-CSharp.git?path=src/MessagePack.UnityClient/Assets/Scripts/MessagePack"
+    "com.endel.nativewebsocket": "1.1.4"
   },
   "scopedRegistries": [
     {
       "name": "package.openupm.com",
       "url": "https://package.openupm.com",
       "scopes": [
-        "com.endel.nativewebsocket",
-        "com.neuecc.messagepack"
+        "com.endel.nativewebsocket"
       ]
     }
   ]
