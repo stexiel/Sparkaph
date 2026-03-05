@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using MessagePack;
 
 namespace Sparkaph.Network
 {
@@ -24,254 +23,151 @@ namespace Sparkaph.Network
         public const byte TerritoryUpdate = 18;
     }
 
-    [MessagePackObject]
+    [System.Serializable]
     public class MessageEnvelope
     {
-        [Key(0)]
-        public byte Type { get; set; }
-
-        [Key(1)]
-        public long Timestamp { get; set; }
-
-        [Key(2)]
-        public byte[] Data { get; set; }
+        public byte Type;
+        public long Timestamp;
+        public byte[] Data;
     }
 
     // Client -> Server Messages
 
-    [MessagePackObject]
+    [System.Serializable]
     public class ConnectMessage
     {
-        [Key(0)]
-        public string PlayerId { get; set; }
+        public string PlayerId;
+        public string Username;
 
-        [Key(1)]
-        public string Username { get; set; }
-
-        [Key(2)]
-        public string DeviceId { get; set; }
-
-        [Key(3)]
-        public string Platform { get; set; }
-
-        [Key(4)]
-        public string GameMode { get; set; }
-
-        [Key(5)]
-        public string QueueType { get; set; }
+        public string DeviceId;
+        public string Platform;
+        public string GameMode;
+        public string QueueType;
     }
 
-    [MessagePackObject]
+    [System.Serializable]
     public class InputMessage
     {
-        [Key(0)]
-        public uint Sequence { get; set; }
-
-        [Key(1)]
-        public Vector2Data Direction { get; set; }
-
-        [Key(2)]
-        public long Timestamp { get; set; }
+        public uint Sequence;
+        public Vector2Data Direction;
+        public long Timestamp;
     }
 
-    [MessagePackObject]
+    [System.Serializable]
     public class PingMessage
     {
-        [Key(0)]
-        public long ClientTime { get; set; }
+        public long ClientTime;
     }
 
     // Server -> Client Messages
 
-    [MessagePackObject]
+    [System.Serializable]
     public class WelcomeMessage
     {
-        [Key(0)]
-        public string PlayerId { get; set; }
-
-        [Key(1)]
-        public string SessionToken { get; set; }
-
-        [Key(2)]
-        public long ServerTime { get; set; }
-
-        [Key(3)]
-        public int TickRate { get; set; }
+        public string PlayerId;
+        public string SessionToken;
+        public long ServerTime;
+        public int TickRate;
     }
 
-    [MessagePackObject]
+    [System.Serializable]
     public class GameStateMessage
     {
-        [Key(0)]
-        public ulong Tick { get; set; }
-
-        [Key(1)]
-        public List<PlayerState> Players { get; set; }
-
-        [Key(2)]
-        public long Timestamp { get; set; }
+        public ulong Tick;
+        public List<PlayerState> Players;
+        public long Timestamp;
     }
 
-    [MessagePackObject]
+    [System.Serializable]
     public class PlayerState
     {
-        [Key(0)]
-        public string Id { get; set; }
-
-        [Key(1)]
-        public Vector2Data Position { get; set; }
-
-        [Key(2)]
-        public Vector2Data Direction { get; set; }
-
-        [Key(3)]
-        public List<Vector2Data> Trail { get; set; }
-
-        [Key(4)]
-        public float Territory { get; set; }
-
-        [Key(5)]
-        public bool IsAlive { get; set; }
-
-        [Key(6)]
-        public int Kills { get; set; }
-
-        [Key(7)]
-        public string TeamId { get; set; }
+        public string Id;
+        public Vector2Data Position;
+        public Vector2Data Direction;
+        public List<Vector2Data> Trail;
+        public float Territory;
+        public bool IsAlive;
+        public int Kills;
+        public string TeamId;
     }
 
-    [MessagePackObject]
+    [System.Serializable]
     public class PlayerJoinedMessage
     {
-        [Key(0)]
-        public string PlayerId { get; set; }
-
-        [Key(1)]
-        public string Username { get; set; }
-
-        [Key(2)]
-        public string TeamId { get; set; }
+        public string PlayerId;
+        public string Username;
+        public string TeamId;
     }
 
-    [MessagePackObject]
+    [System.Serializable]
     public class PlayerLeftMessage
     {
-        [Key(0)]
-        public string PlayerId { get; set; }
-
-        [Key(1)]
-        public string Reason { get; set; }
+        public string PlayerId;
+        public string Reason;
     }
 
-    [MessagePackObject]
+    [System.Serializable]
     public class MatchStartMessage
     {
-        [Key(0)]
-        public string MatchId { get; set; }
-
-        [Key(1)]
-        public string Mode { get; set; }
-
-        [Key(2)]
-        public int MapSize { get; set; }
-
-        [Key(3)]
-        public List<PlayerInfo> Players { get; set; }
-
-        [Key(4)]
-        public long StartTime { get; set; }
-
-        [Key(5)]
-        public int Duration { get; set; }
+        public string MatchId;
+        public string Mode;
+        public int MapSize;
+        public List<PlayerInfo> Players;
+        public long StartTime;
+        public int Duration;
     }
 
-    [MessagePackObject]
+    [System.Serializable]
     public class PlayerInfo
     {
-        [Key(0)]
-        public string Id { get; set; }
-
-        [Key(1)]
-        public string Username { get; set; }
-
-        [Key(2)]
-        public int Rating { get; set; }
-
-        [Key(3)]
-        public string TeamId { get; set; }
-
-        [Key(4)]
-        public Vector2Data SpawnPos { get; set; }
+        public string Id;
+        public string Username;
+        public int Rating;
+        public string TeamId;
+        public Vector2Data SpawnPos;
     }
 
-    [MessagePackObject]
+    [System.Serializable]
     public class MatchEndMessage
     {
-        [Key(0)]
-        public string MatchId { get; set; }
-
-        [Key(1)]
-        public string Winner { get; set; }
-
-        [Key(2)]
-        public List<MatchResult> Results { get; set; }
-
-        [Key(3)]
-        public int Duration { get; set; }
+        public string MatchId;
+        public string Winner;
+        public List<MatchResult> Results;
+        public int Duration;
     }
 
-    [MessagePackObject]
+    [System.Serializable]
     public class MatchResult
     {
-        [Key(0)]
-        public string PlayerId { get; set; }
-
-        [Key(1)]
-        public int Rank { get; set; }
-
-        [Key(2)]
-        public float TerritoryPercent { get; set; }
-
-        [Key(3)]
-        public int Kills { get; set; }
-
-        [Key(4)]
-        public int TimeAlive { get; set; }
-
-        [Key(5)]
-        public int RatingChange { get; set; }
+        public string PlayerId;
+        public int Rank;
+        public float TerritoryPercent;
+        public int Kills;
+        public int TimeAlive;
+        public int RatingChange;
     }
 
-    [MessagePackObject]
+    [System.Serializable]
     public class PongMessage
     {
-        [Key(0)]
-        public long ClientTime { get; set; }
-
-        [Key(1)]
-        public long ServerTime { get; set; }
+        public long ClientTime;
+        public long ServerTime;
     }
 
-    [MessagePackObject]
+    [System.Serializable]
     public class ErrorMessage
     {
-        [Key(0)]
-        public int Code { get; set; }
-
-        [Key(1)]
-        public string Message { get; set; }
+        public int Code;
+        public string Message;
     }
 
     // Common Types
 
-    [MessagePackObject]
+    [System.Serializable]
     public class Vector2Data
     {
-        [Key(0)]
-        public float X { get; set; }
-
-        [Key(1)]
-        public float Y { get; set; }
+        public float X;
+        public float Y;
 
         public UnityEngine.Vector2 ToVector2()
         {
