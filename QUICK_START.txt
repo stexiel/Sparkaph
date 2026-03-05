@@ -1,0 +1,149 @@
+╔══════════════════════════════════════════════════════════════╗
+║              SPARKAPH - QUICK START GUIDE                    ║
+╚══════════════════════════════════════════════════════════════╝
+
+🚀 БЫСТРЫЙ ЗАПУСК (3 шага)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Запусти сервер:
+   ├─ Двойной клик на START_GAME.bat
+   └─ Или: cd server && bin\gameserver.exe
+
+2. Открой Unity:
+   ├─ Unity Hub → Open Project
+   ├─ Выбери папку: client/
+   └─ Подожди загрузки проекта
+
+3. Нажми Play ▶️ в Unity Editor
+
+
+📋 ЧТО УЖЕ ГОТОВО
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Backend (Go)
+   • WebSocket server
+   • Matchmaking система
+   • Territory system
+   • Anti-cheat
+   • Metrics
+
+✅ Unity Client (C#)
+   • NetworkManager
+   • PlayerController
+   • GameManager
+   • UIManager
+   • AudioManager
+   • Effects system
+
+
+🎮 УПРАВЛЕНИЕ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Desktop:
+   • WASD / Arrow Keys - движение
+   • Mouse - альтернативное управление
+
+Mobile:
+   • Touch & Drag - виртуальный джойстик
+
+
+🔧 НАСТРОЙКА
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Server URL (если нужно изменить):
+   1. Unity → Assets → Scripts → Network → NetworkManager.cs
+   2. Найди: serverUrl = "ws://localhost:8081/ws"
+   3. Измени на свой URL
+
+
+📊 ПРОВЕРКА СЕРВЕРА
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Health check:
+   curl http://localhost:8081/health
+
+Metrics:
+   curl http://localhost:8081/metrics
+
+
+🐛 TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Проблема: Порт 8081 занят
+Решение: Измени SERVER_PORT=8082 в START_GAME.bat
+
+Проблема: Unity не находит скрипты
+Решение: Assets → Reimport All
+
+Проблема: Не подключается к серверу
+Решение: 
+   1. Проверь что сервер запущен
+   2. Проверь URL в NetworkManager
+   3. Проверь firewall
+
+
+📁 СТРУКТУРА ПРОЕКТА
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Sparkaph/
+├── server/              # Go backend
+│   ├── bin/            # Скомпилированный сервер
+│   ├── cmd/            # Main entry point
+│   └── pkg/            # Game logic
+│
+├── client/             # Unity project
+│   ├── Assets/
+│   │   └── Scripts/   # C# скрипты
+│   └── ProjectSettings/
+│
+└── START_GAME.bat     # Быстрый запуск
+
+
+🎯 СЛЕДУЮЩИЕ ШАГИ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Создай сцены в Unity:
+   • MainMenu.unity
+   • Game.unity
+
+2. Создай префабы:
+   • Player.prefab
+   • NetworkManager.prefab
+
+3. Настрой UI:
+   • Main menu
+   • Game HUD
+   • Results screen
+
+4. Тестируй:
+   • Запусти несколько клиентов
+   • Проверь matchmaking
+   • Протестируй gameplay
+
+
+💡 ПОЛЕЗНЫЕ КОМАНДЫ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Сборка сервера:
+   cd server
+   go build -o bin/gameserver.exe ./cmd/gameserver
+
+Запуск с другим портом:
+   set SERVER_PORT=8082 && bin\gameserver.exe
+
+Тесты:
+   cd server
+   go test ./...
+
+
+🌐 ССЫЛКИ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+GitHub: https://github.com/stexiel/Sparkaph
+Server: http://localhost:8081
+WebSocket: ws://localhost:8081/ws
+
+
+═══════════════════════════════════════════════════════════════
+
+Готов к разработке! 🚀

@@ -1,23 +1,42 @@
-# Sparkaph - Scalable Multiplayer Territory Game
+# Sparkaph - Multiplayer Territory Game
 
-## Architecture Overview
+Production-ready multiplayer game. Scales from 10 players to 10M MAU.
 
-Production-ready multiplayer game designed to scale from 10 players to 10M MAU.
+## 🚀 Quick Start
 
-### Tech Stack
-- **Backend:** Go 1.21+ (high performance, low latency)
-- **Database:** PostgreSQL 15+ (persistent data) + Redis 7+ (real-time state)
+### 1. Запуск сервера
+```bash
+# Вариант A: Автоматический запуск
+START_GAME.bat
+
+# Вариант B: Ручной запуск
+cd server
+bin\gameserver.exe
+```
+
+### 2. Запуск Unity клиента
+```
+1. Открой Unity Hub
+2. Add Project → выбери папку client/
+3. Открой проект (Unity 2022.3 LTS)
+4. Нажми Play ▶️
+```
+
+### 3. Проверка
+```bash
+# Health check
+curl http://localhost:8081/health
+
+# Metrics
+curl http://localhost:8081/metrics
+```
+
+## 📋 Tech Stack
+- **Backend:** Go 1.21 (WebSocket server, 60 tick/sec)
 - **Client:** Unity 2022 LTS + C#
-- **Protocol:** WebSocket with binary protocol (MessagePack)
-- **Deployment:** Docker + Kubernetes (auto-scaling)
-
-### Key Metrics Target
-- 10M MAU (Monthly Active Users)
-- ~500K DAU (Daily Active Users)
-- ~50K CCU (Concurrent Users at peak)
-- ~2,000 simultaneous matches
-- 60 tick/sec server update rate
-- <50ms latency (regional servers)
+- **Protocol:** WebSocket + MessagePack
+- **Database:** PostgreSQL + Redis
+- **Deploy:** Docker + Kubernetes
 
 ## Project Structure
 

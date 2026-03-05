@@ -4,7 +4,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/stexiel/sparkaph/pkg/game"
 	"github.com/stexiel/sparkaph/pkg/protocol"
 	"go.uber.org/zap"
@@ -27,11 +26,11 @@ type Queue struct {
 }
 
 type QueuedPlayer struct {
-	ID        string
-	Username  string
-	Rating    int
-	TeamID    string
-	JoinedAt  time.Time
+	ID       string
+	Username string
+	Rating   int
+	TeamID   string
+	JoinedAt time.Time
 }
 
 type Matchmaker struct {
