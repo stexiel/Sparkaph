@@ -1,0 +1,73 @@
+╔══════════════════════════════════════════════════════════════╗
+║          УСТАНОВКА ПАКЕТОВ ДЛЯ UNITY                         ║
+╚══════════════════════════════════════════════════════════════╝
+
+Unity не может автоматически установить некоторые пакеты.
+Нужно установить их вручную.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📦 ВАРИАНТ 1: Через Unity Package Manager (рекомендуется)
+
+1. MessagePack for C#:
+   ├─ Window → Package Manager
+   ├─ "+" → Add package from git URL
+   └─ Вставь: https://github.com/neuecc/MessagePack-CSharp.git?path=src/MessagePack.UnityClient/Assets/Scripts/MessagePack
+
+2. NativeWebSocket:
+   ├─ Window → Package Manager
+   ├─ "+" → Add package from git URL
+   └─ Вставь: https://github.com/endel/NativeWebSocket.git#upm
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📦 ВАРИАНТ 2: Скачать DLL вручную
+
+1. MessagePack:
+   ├─ Скачай: https://www.nuget.org/packages/MessagePack
+   ├─ Распакуй .nupkg (это ZIP архив)
+   ├─ Найди MessagePack.dll в lib/netstandard2.0/
+   └─ Скопируй в client/Assets/Plugins/
+
+2. NativeWebSocket:
+   ├─ Скачай: https://github.com/endel/NativeWebSocket/releases
+   ├─ Распакуй архив
+   └─ Скопируй файлы в client/Assets/Plugins/NativeWebSocket/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📦 ВАРИАНТ 3: Использовать OpenUPM (самый простой)
+
+1. Открой терминал в папке client/
+2. Выполни команды:
+
+   npm install -g openupm-cli
+   openupm add com.endel.nativewebsocket
+
+3. Для MessagePack используй Вариант 1
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ ПРОВЕРКА
+
+После установки пакетов:
+1. Unity → Assets → Reimport All
+2. Подожди пока Unity перекомпилирует
+3. Проверь Console - ошибок быть не должно
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔧 ЕСЛИ ОШИБКИ ОСТАЛИСЬ
+
+Проблема: "The type or namespace name 'MessagePack' could not be found"
+Решение: Установи MessagePack через Вариант 1 или 2
+
+Проблема: "The type or namespace name 'NativeWebSocket' could not be found"
+Решение: Установи NativeWebSocket через Вариант 1 или 3
+
+Проблема: "AudioClip could not be found"
+Решение: Это нормально - просто не назначены audio файлы
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+После установки пакетов проект должен скомпилироваться без ошибок!
