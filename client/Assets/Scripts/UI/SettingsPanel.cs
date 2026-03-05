@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Sparkaph.Audio;
 
 namespace Sparkaph.UI
 {
@@ -41,24 +40,24 @@ namespace Sparkaph.UI
 
         private void LoadSettings()
         {
-            // Audio
-            if (AudioManager.Instance != null)
-            {
-                if (masterVolumeSlider != null)
-                    masterVolumeSlider.value = AudioManager.Instance.GetMasterVolume();
-
-                if (musicVolumeSlider != null)
-                    musicVolumeSlider.value = AudioManager.Instance.GetMusicVolume();
-
-                if (sfxVolumeSlider != null)
-                    sfxVolumeSlider.value = AudioManager.Instance.GetSFXVolume();
-
-                if (musicToggle != null)
-                    musicToggle.isOn = AudioManager.Instance.IsMusicEnabled();
-
-                if (sfxToggle != null)
-                    sfxToggle.isOn = AudioManager.Instance.IsSFXEnabled();
-            }
+            // Audio - temporarily disabled
+            // if (AudioManager.Instance != null)
+            // {
+            //     if (masterVolumeSlider != null)
+            //         masterVolumeSlider.value = AudioManager.Instance.GetMasterVolume();
+            //
+            //     if (musicVolumeSlider != null)
+            //         musicVolumeSlider.value = AudioManager.Instance.GetMusicVolume();
+            //
+            //     if (sfxVolumeSlider != null)
+            //         sfxVolumeSlider.value = AudioManager.Instance.GetSFXVolume();
+            //
+            //     if (musicToggle != null)
+            //         musicToggle.isOn = AudioManager.Instance.IsMusicEnabled();
+            //
+            //     if (sfxToggle != null)
+            //         sfxToggle.isOn = AudioManager.Instance.IsSFXEnabled();
+            // }
 
             // Graphics
             if (qualityDropdown != null)
@@ -144,27 +143,27 @@ namespace Sparkaph.UI
 
         private void OnMasterVolumeChanged(float value)
         {
-            AudioManager.Instance?.SetMasterVolume(value);
+            // AudioManager.Instance?.SetMasterVolume(value);
         }
 
         private void OnMusicVolumeChanged(float value)
         {
-            AudioManager.Instance?.SetMusicVolume(value);
+            // AudioManager.Instance?.SetMusicVolume(value);
         }
 
         private void OnSFXVolumeChanged(float value)
         {
-            AudioManager.Instance?.SetSFXVolume(value);
+            // AudioManager.Instance?.SetSFXVolume(value);
         }
 
         private void OnMusicToggleChanged(bool value)
         {
-            AudioManager.Instance?.SetMusicEnabled(value);
+            // AudioManager.Instance?.SetMusicEnabled(value);
         }
 
         private void OnSFXToggleChanged(bool value)
         {
-            AudioManager.Instance?.SetSFXEnabled(value);
+            // AudioManager.Instance?.SetSFXEnabled(value);
         }
 
         // Graphics callbacks
@@ -210,7 +209,7 @@ namespace Sparkaph.UI
         private void OnApplyClicked()
         {
             PlayerPrefs.Save();
-            AudioManager.Instance?.PlayButtonClick();
+            // AudioManager.Instance?.PlayButtonClick();
             Debug.Log("[Settings] Settings applied");
         }
 
@@ -218,13 +217,13 @@ namespace Sparkaph.UI
         {
             PlayerPrefs.DeleteAll();
             LoadSettings();
-            AudioManager.Instance?.PlayButtonClick();
+            // AudioManager.Instance?.PlayButtonClick();
             Debug.Log("[Settings] Settings reset to defaults");
         }
 
         private void OnCloseClicked()
         {
-            AudioManager.Instance?.PlayButtonClick();
+            // AudioManager.Instance?.PlayButtonClick();
             gameObject.SetActive(false);
         }
     }
