@@ -7,7 +7,7 @@ namespace Sparkaph.Utils
     {
         public static PerformanceMonitor Instance { get; private set; }
 
-        [Header("Performance Metrics")]
+        // Performance Metrics
         public float CurrentFPS { get; private set; }
         public long TotalMemoryMB { get; private set; }
         public long UsedMemoryMB { get; private set; }
@@ -15,7 +15,7 @@ namespace Sparkaph.Utils
         public int Triangles { get; private set; }
         public int Vertices { get; private set; }
 
-        [Header("Settings")]
+        // Settings
         [SerializeField] private bool enableMonitoring = true;
         [SerializeField] private float updateInterval = 1f;
 
