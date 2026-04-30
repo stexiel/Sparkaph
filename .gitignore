@@ -1,0 +1,18 @@
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Backend binary
+backend/sparkaph
+backend/*.exe
+
+# Environment
+.env
+**/.env
+
+# Go
+backend/vendor/
+
+# OS
+.DS_Store
+Thumbs.db
