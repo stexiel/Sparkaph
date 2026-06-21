@@ -1,0 +1,16 @@
+node_modules/
+dist/
+build/
+.env
+.env.local
+*.log
+.DS_Store
+uploads/
+apps/
+backend/uploads/
+backend/apps/
+backend/deployments/
+frontend/dist/
+.vscode/
+*.zip
+commandlinetools.zip

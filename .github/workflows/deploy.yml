@@ -1,0 +1,32 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            cd /home/${{ secrets.SSH_USER }}/sparkaph
+            git pull origin main
+            cd backend
+            npm install
+            npm run build
+            pm2 restart sparkaph-backend
+            cd ../frontend
+            npm install
+            npm run build
+            pm2 restart sparkaph-frontend || pm2 start npm --name "sparkaph-frontend" -- start

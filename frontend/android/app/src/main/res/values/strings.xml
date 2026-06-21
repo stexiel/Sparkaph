@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Sparkaph</string>
+    <string name="title_activity_main">Sparkaph</string>
+    <string name="package_name">com.sparkaph.app</string>
+    <string name="custom_url_scheme">com.sparkaph.app</string>
+</resources>

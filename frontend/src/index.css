@@ -1,0 +1,780 @@
+@import "tailwindcss";
+
+@theme {
+  /* iOS System Colors */
+  --color-ios-blue: #007AFF;
+  --color-ios-green: #34C759;
+  --color-ios-indigo: #5856D6;
+  --color-ios-orange: #FF9500;
+  --color-ios-pink: #FF2D55;
+  --color-ios-purple: #AF52DE;
+  --color-ios-teal: #5AC8FA;
+  --color-ios-yellow: #FFCC00;
+  --color-ios-red: #FF3B30;
+  
+  /* Light Theme Colors */
+  --color-light-background: #F4F4F9;
+  --color-light-secondary-background: rgba(255, 255, 255, 0.4);
+  --color-light-tertiary-background: rgba(255, 255, 255, 0.25);
+  --color-light-text: #1C1C1E;
+  --color-light-secondary-text: #48484A;
+  --color-light-tertiary-text: #8E8E93;
+  --color-light-separator: rgba(0, 0, 0, 0.05);
+  --color-light-glass: rgba(255, 255, 255, 0.25);
+  --color-light-glass-strong: rgba(255, 255, 255, 0.45);
+  --color-light-glass-button: rgba(255, 255, 255, 0.3);
+  --color-light-glass-button-hover: rgba(255, 255, 255, 0.5);
+  --color-light-glass-border: rgba(255, 255, 255, 0.4);
+  
+  /* Dark Theme Colors */
+  --color-dark-background: #0A0A0E;
+  --color-dark-secondary-background: rgba(20, 20, 25, 0.5);
+  --color-dark-tertiary-background: rgba(30, 30, 35, 0.35);
+  --color-dark-text: #FFFFFF;
+  --color-dark-secondary-text: #E5E5EA;
+  --color-dark-tertiary-text: #98989D;
+  --color-dark-separator: rgba(255, 255, 255, 0.06);
+  --color-dark-glass: rgba(18, 18, 24, 0.35);
+  --color-dark-glass-strong: rgba(24, 24, 30, 0.55);
+  --color-dark-glass-button: rgba(255, 255, 255, 0.06);
+  --color-dark-glass-button-hover: rgba(255, 255, 255, 0.12);
+  --color-dark-glass-border: rgba(255, 255, 255, 0.12);
+
+  /* Blob Colors */
+  --color-light-blob-1: radial-gradient(circle, rgba(0, 122, 255, 0.22) 0%, rgba(88, 86, 214, 0.12) 50%, transparent 100%);
+  --color-light-blob-2: radial-gradient(circle, rgba(255, 45, 85, 0.18) 0%, rgba(255, 149, 0, 0.08) 50%, transparent 100%);
+  --color-light-blob-3: radial-gradient(circle, rgba(175, 82, 222, 0.15) 0%, rgba(90, 200, 250, 0.05) 50%, transparent 100%);
+
+  --color-dark-blob-1: radial-gradient(circle, rgba(0, 122, 255, 0.26) 0%, rgba(88, 86, 214, 0.15) 50%, transparent 100%);
+  --color-dark-blob-2: radial-gradient(circle, rgba(255, 45, 85, 0.22) 0%, rgba(255, 149, 0, 0.1) 50%, transparent 100%);
+  --color-dark-blob-3: radial-gradient(circle, rgba(175, 82, 222, 0.2) 0%, rgba(90, 200, 250, 0.08) 50%, transparent 100%);
+  
+  /* iOS Fonts */
+  --font-ios: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  
+  /* Glassmorphism Shadows */
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.12);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-elevated: 0 16px 48px rgba(0, 0, 0, 0.2);
+
+  /* Glassmorphism Blur */
+  --blur-glass: 25px;
+  --blur-glass-strong: 40px;
+  
+  /* iOS Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+}
+
+[data-theme="light"] {
+  --color-background: var(--color-light-background);
+  --color-secondary-background: var(--color-light-secondary-background);
+  --color-tertiary-background: var(--color-light-tertiary-background);
+  --color-text: var(--color-light-text);
+  --color-secondary-text: var(--color-light-secondary-text);
+  --color-tertiary-text: var(--color-light-tertiary-text);
+  --color-separator: var(--color-light-separator);
+  --color-glass: var(--color-light-glass);
+  --color-glass-strong: var(--color-light-glass-strong);
+  --color-glass-button: var(--color-light-glass-button);
+  --color-glass-button-hover: var(--color-light-glass-button-hover);
+  --color-glass-border: var(--color-light-glass-border);
+  --blob-1: var(--color-light-blob-1);
+  --blob-2: var(--color-light-blob-2);
+  --blob-3: var(--color-light-blob-3);
+}
+
+[data-theme="dark"] {
+  --color-background: var(--color-dark-background);
+  --color-secondary-background: var(--color-dark-secondary-background);
+  --color-tertiary-background: var(--color-dark-tertiary-background);
+  --color-text: var(--color-dark-text);
+  --color-secondary-text: var(--color-dark-secondary-text);
+  --color-tertiary-text: var(--color-dark-tertiary-text);
+  --color-separator: var(--color-dark-separator);
+  --color-glass: var(--color-dark-glass);
+  --color-glass-strong: var(--color-dark-glass-strong);
+  --color-glass-button: var(--color-dark-glass-button);
+  --color-glass-button-hover: var(--color-dark-glass-button-hover);
+  --color-glass-border: var(--color-dark-glass-border);
+  --blob-1: var(--color-dark-blob-1);
+  --blob-2: var(--color-dark-blob-2);
+  --blob-3: var(--color-dark-blob-3);
+}
+
+@layer components {
+  /* Glass Panel - More transparent for better glass effect */
+  .glass {
+    background: var(--color-glass);
+    border: 1px solid var(--color-glass-border);
+    box-shadow: 
+      0 8px 32px 0 rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+  }
+
+  .glass-strong {
+    background: var(--color-glass-strong);
+    border: 1px solid var(--color-glass-border);
+    box-shadow: 
+      0 12px 48px 0 rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(60px) saturate(200%);
+    -webkit-backdrop-filter: blur(60px) saturate(200%);
+  }
+  
+  /* Card */
+  .card {
+    background: var(--color-secondary-background);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-separator);
+  }
+  
+  /* Glass Buttons - iOS 26/27 Style */
+  .btn-glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(60px) saturate(180%);
+    -webkit-backdrop-filter: blur(60px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-text);
+    font-weight: 600;
+    border-radius: var(--radius-xl);
+    padding: 12px 24px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .btn-glass:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .btn-glass:active {
+    transform: scale(0.98) translateY(0);
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Glass Button Primary - iOS 26/27 Blue */
+  .btn-glass-primary {
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.5), rgba(88, 86, 214, 0.5));
+    backdrop-filter: blur(60px) saturate(180%);
+    -webkit-backdrop-filter: blur(60px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    font-weight: 600;
+    border-radius: var(--radius-xl);
+    padding: 12px 24px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+      0 8px 32px rgba(0, 122, 255, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  .btn-glass-primary:hover {
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.6), rgba(88, 86, 214, 0.6));
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 
+      0 12px 40px rgba(0, 122, 255, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .btn-glass-primary:active {
+    transform: scale(0.98) translateY(0);
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.5), rgba(88, 86, 214, 0.5));
+  }
+
+  /* Glass Button Secondary - iOS 26/27 Outline */
+  .btn-glass-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(60px) saturate(180%);
+    -webkit-backdrop-filter: blur(60px) saturate(180%);
+    border: 2px solid rgba(0, 122, 255, 0.5);
+    color: var(--color-ios-blue);
+    font-weight: 600;
+    border-radius: var(--radius-xl);
+    padding: 12px 24px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+      0 8px 32px rgba(0, 122, 255, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .btn-glass-secondary:hover {
+    background: rgba(0, 122, 255, 0.1);
+    border-color: rgba(0, 122, 255, 0.7);
+    box-shadow: 
+      0 12px 40px rgba(0, 122, 255, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .btn-glass-secondary:active {
+    transform: scale(0.98) translateY(0);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Glass Button Danger - iOS 26/27 Red */
+  .btn-glass-danger {
+    background: linear-gradient(135deg, rgba(255, 59, 48, 0.5), rgba(255, 45, 85, 0.5));
+    backdrop-filter: blur(60px) saturate(180%);
+    -webkit-backdrop-filter: blur(60px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    font-weight: 600;
+    border-radius: var(--radius-xl);
+    padding: 12px 24px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+      0 8px 32px rgba(255, 59, 48, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  .btn-glass-danger:hover {
+    background: linear-gradient(135deg, rgba(255, 59, 48, 0.6), rgba(255, 45, 85, 0.6));
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 
+      0 12px 40px rgba(255, 59, 48, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .btn-glass-danger:active {
+    transform: scale(0.98) translateY(0);
+    background: linear-gradient(135deg, rgba(255, 59, 48, 0.5), rgba(255, 45, 85, 0.5));
+  }
+
+  /* Legacy button for compatibility */
+  .btn-primary {
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.9), rgba(88, 86, 214, 0.9));
+    backdrop-filter: blur(var(--blur-glass));
+    -webkit-backdrop-filter: blur(var(--blur-glass));
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-weight: 600;
+    border-radius: var(--radius-xl);
+    padding: 12px 24px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 122, 255, 0.4);
+  }
+  
+  .btn-primary:active {
+    transform: translateY(0) scale(0.98);
+  }
+  
+  /* iOS 26/27 Glass Input - Simplified */
+  .input {
+    background: var(--color-tertiary-background);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-separator);
+    border-radius: var(--radius-xl);
+    color: var(--color-text);
+    font-size: 17px;
+    padding: 14px 18px;
+    transition: all 0.15s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .input:focus {
+    outline: none;
+    background: var(--color-secondary-background);
+    border-color: var(--color-ios-blue);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15), 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .input::placeholder {
+    color: var(--color-tertiary-text);
+  }
+
+  /* Glass Textarea - Simplified */
+  .textarea {
+    background: var(--color-tertiary-background);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--color-separator);
+    border-radius: var(--radius-xl);
+    color: var(--color-text);
+    font-size: 17px;
+    padding: 14px 18px;
+    transition: all 0.15s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    min-height: 100px;
+    resize: vertical;
+    font-family: var(--font-ios);
+  }
+
+  .textarea:focus {
+    outline: none;
+    background: var(--color-secondary-background);
+    border-color: var(--color-ios-blue);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15), 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+  
+  /* Icon Gradient */
+  .icon-gradient {
+    background: linear-gradient(135deg, var(--color-ios-blue), var(--color-ios-purple));
+  }
+}
+
+body {
+  font-family: var(--font-ios);
+  overflow: hidden;
+  background: var(--color-background);
+  color: var(--color-text);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-tertiary-text);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary-text);
+}
+
+/* Safe Area for Mobile Devices */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Prevent scrolling on main container */
+#root {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Toast Animations */
+@keyframes slide-in {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+/* iOS 18 Responsive Utilities */
+@media (max-width: 640px) {
+  .glass, .glass-strong {
+    border-radius: var(--radius-lg);
+  }
+  
+  .btn-glass, .btn-glass-primary, .btn-glass-secondary, .btn-glass-danger {
+    padding: 10px 20px;
+    font-size: 15px;
+    border-radius: var(--radius-lg);
+  }
+  
+  .input {
+    padding: 12px 16px;
+    font-size: 16px;
+    border-radius: var(--radius-lg);
+  }
+}
+
+/* Tablet */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .glass, .glass-strong {
+    border-radius: var(--radius-xl);
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  .glass, .glass-strong {
+    border-radius: var(--radius-2xl);
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .btn-glass, .btn-glass-primary, .btn-glass-secondary, .btn-glass-danger {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .input {
+    min-height: 44px;
+  }
+}
+
+/* Reduce Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Background gradient blobs */
+.bg-blobs {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--color-background);
+  transition: background 0.5s ease;
+}
+
+.bg-blob-1 {
+  position: absolute;
+  top: -20vh;
+  left: -20vw;
+  width: 65vw;
+  height: 65vw;
+  background: var(--blob-1);
+  filter: blur(120px);
+  animation: float-blob-1 25s infinite alternate ease-in-out;
+}
+
+.bg-blob-2 {
+  position: absolute;
+  bottom: -30vh;
+  right: -20vw;
+  width: 75vw;
+  height: 75vw;
+  background: var(--blob-2);
+  filter: blur(140px);
+  animation: float-blob-2 30s infinite alternate ease-in-out;
+}
+
+.bg-blob-3 {
+  position: absolute;
+  top: 30vh;
+  left: 35vw;
+  width: 45vw;
+  height: 45vw;
+  background: var(--blob-3);
+  filter: blur(110px);
+  animation: float-blob-3 20s infinite alternate ease-in-out;
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -100%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out;
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.2s ease-out;
+}
+
+@keyframes float-blob-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(8vw, 6vh) scale(1.15); }
+}
+
+@keyframes float-blob-2 {
+  0% { transform: translate(0, 0) scale(1.1); }
+  100% { transform: translate(-6vw, -8vh) scale(0.85); }
+}
+
+@keyframes float-blob-3 {
+  0% { transform: translate(0, 0) scale(0.9); }
+  100% { transform: translate(5vw, -5vh) scale(1.1); }
+}
+
+/* Global Input Fixes */
+input, textarea, select {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--color-text);
+  box-sizing: border-box;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+}
+
+/* Mobile Fixes */
+@media (max-width: 768px) {
+  /* Fix text rendering on mobile */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* Prevent zoom on input focus and fix text display */
+  input, textarea, select {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif !important;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  
+  /* Fix placeholder text */
+  input::placeholder, textarea::placeholder {
+    opacity: 0.6;
+    font-size: 16px !important;
+  }
+  
+  /* Fix backdrop-filter on Android */
+  .glass, .glass-strong {
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+  }
+  
+  /* Improve touch targets - remove min-width from inputs to prevent icon displacement */
+  button, a, select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Inputs with icons need flexible width - NO min-width */
+  input {
+    min-height: 44px;
+    min-width: auto !important;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Fix icon duplication by preventing layer stacking issues */
+  svg {
+    display: block;
+    flex-shrink: 0;
+    isolation: isolate;
+    shape-rendering: geometricPrecision;
+    width: auto;
+    height: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Ensure absolutely positioned icons don't cause overflow */
+  .relative {
+    overflow: visible !important;
+    z-index: 1;
+  }
+
+  /* Fix input containers with icons to prevent layout shifts */
+  .relative input {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    text-indent: 0;
+  }
+
+  /* Prevent icon rendering issues on mobile */
+  .relative svg {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Fix icon positioning in flex containers */
+  .flex svg {
+    flex-shrink: 0;
+  }
+
+  /* Fix button containers with icons */
+  button svg {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  /* Fix gap issues in flex containers with icons */
+  .flex.items-center svg:not(:last-child) {
+    margin-right: 0.5rem;
+  }
+
+  .flex.items-center svg:last-child {
+    margin-left: 0.5rem;
+  }
+
+  /* Prevent icon overlap in button groups */
+  button.gap-2 svg {
+    margin: 0 !important;
+  }
+
+  /* Fix icon visibility in dark backgrounds */
+  .glass svg, .glass-strong svg {
+    color: var(--color-text);
+  }
+
+  /* Ensure icons don't overflow their containers */
+  button, a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Fix icon alignment in buttons */
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Fix icon duplication in nested containers */
+  .relative .relative svg {
+    position: absolute;
+  }
+
+  /* Fix icon spacing in button text combinations */
+  button span + svg, button svg + span {
+    margin-left: 0.5rem;
+  }
+
+  /* Fix icon centering in absolute positioning */
+  .absolute.left-3.top-1\/2 {
+    transform: translateY(-50%);
+  }
+
+  /* Prevent icon rendering glitches during transitions */
+  * {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  /* Fix icon container overflow on mobile */
+  @media (max-width: 768px) {
+    .relative {
+      overflow: visible !important;
+    }
+
+    .relative svg {
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
+
+    /* Fix button icon spacing on mobile */
+    button svg {
+      flex-shrink: 0;
+    }
+
+    /* Prevent icon from being cut off */
+    .relative {
+      min-height: 44px;
+    }
+
+    /* Ensure inputs don't push icons */
+    input {
+      min-width: auto !important;
+    }
+  }
+
+  /* Fix icon duplication in scrollable containers */
+  .overflow-y-auto svg, .overflow-x-auto svg {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  /* Specific fix for input icons to prevent them from flying off */
+  .relative .absolute {
+    position: absolute !important;
+  }
+
+  /* Fix icon positioning in input fields specifically */
+  .relative input.pl-10 {
+    padding-left: 40px !important;
+  }
+
+  .relative input.pl-12 {
+    padding-left: 48px !important;
+  }
+
+  /* Ensure icons stay in place during focus states */
+  input:focus + svg, input:focus ~ svg {
+    position: absolute !important;
+  }
+  
+  /* Fix image rendering */
+  img {
+    max-width: 100%;
+    height: auto;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  
+  /* Prevent text selection issues */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Fix overflow issues */
+  body, html {
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+  }
+  
+  /* Fix safe area for iOS */
+  .ios-safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .ios-safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Android specific fixes */
+@supports (-webkit-appearance: none) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}

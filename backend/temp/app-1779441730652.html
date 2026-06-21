@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Reddit</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ios-text': 'var(--ios-text-color)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* CSS Variables for Glassmorphism & Theming */
+        :root {
+            --ios-bg-color: #e0e0e0; /* Light gray for overall background */
+            --ios-card-bg-start: rgba(255, 255, 255, 0.2); /* Semi-transparent white for card background */
+            --ios-card-bg-end: rgba(255, 255, 255, 0.1); /* Slightly more transparent for a subtle gradient */
+            --ios-border-color: rgba(255, 255, 255, 0.3); /* Lighter border */
+            --ios-text-color: #333;
+            --ios-shadow-color: rgba(0, 0, 0, 0.1);
+            --ios-header-bg: rgba(255, 255, 255, 0.4);
+            --ios-modal-overlay: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Dark mode preference */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --ios-bg-color: #1a1a1a;
+                --ios-card-bg-start: rgba(255, 255, 255, 0.08); /* More subtle in dark mode */
+                --ios-card-bg-end: rgba(255, 255, 255, 0.05);
+                --ios-border-color: rgba(255, 255, 255, 0.15);
+                --ios-text-color: #f0f0f0;
+                --ios-shadow-color: rgba(0, 0, 0, 0.4);
+                --ios-header-bg: rgba(0, 0, 0, 0.3);
+                --ios-modal-overlay: rgba(0, 0, 0, 0.6);
+            }
+        }
+
+        /* Base Body Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            background: var(--ios-bg-color);
+            color: var(--ios-text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-card {
+            background: linear-gradient(135deg, var(--ios-card-bg-start), var(--ios-card-bg-end));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* For Safari */
+            border: 1px solid var(--ios-border-color);
+            box-shadow: 0 8px 32px 0 var(--ios-shadow-color);
+            border-radius: 12px;
+        }
+
+        .glass-header {
+            background: var(--ios-header-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* For Safari */
+            border-bottom: 1px solid var(--ios-border-color);
+            box-shadow: 0 2px 10px var(--ios-shadow-color);
+            z-index: 10; /* Ensure header stays above content */
+        }
+
+        .glass-modal {
+            background: linear-gradient(135deg, var(--ios-card-bg-start), var(--ios-card-bg-end));
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px); /* For Safari */
+            border: 1px solid var(--ios-border-color);
+            box-shadow: 0 8px 32px 0 var(--ios-shadow-color);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        /* Custom Scrollbar for Webkit Browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Specific styles for modal overlay */
+        .modal-overlay {
+            background-color: var(--ios-modal-overlay);
+        }
+    </style>
+</head>
+<body class="selection:bg-blue-300 selection:text-white">
+    <!-- Main App Container -->
+    <div class="relative w-full max-w-lg md:max-w-xl lg:max-w-2xl mx-auto h-[95vh] flex flex-col rounded-3xl overflow-hidden glass-card p-0">
+        <!-- Header -->
+        <header class="glass-header p-4 flex items-center justify-between sticky top-0">
+            <h1 class="text-2xl font-bold text-ios-text">Mini Reddit</h1>
+            <button class="text-blue-500 font-semibold py-1 px-3 rounded-full hover:bg-white/10 transition">
+                Profile
+            </button>
+        </header>
+
+        <!-- Post List Container -->
+        <main class="flex-1 overflow-y-auto p-4 scroll-smooth">
+            <div id="posts-container">
+                <!-- Posts will be injected here by JS -->
+            </div>
+        </main>
+
+        <!-- Floating Action Button -->
+        <button id="add-post-btn" class="fixed bottom-6 right-6 md:bottom-8 md:right-8 bg-blue-500 hover:bg-blue-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition transform hover:scale-105 active:scale-95 z-20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+        </button>
+
+        <!-- New Post Modal -->
+        <div id="new-post-modal" class="fixed inset-0 modal-overlay flex items-center justify-center z-30 hidden">
+            <div class="glass-modal w-11/12 md:w-2/3 lg:w-1/2 p-6 md:p-8 relative">
+                <h2 class="text-2xl font-bold mb-6 text-ios-text">Create New Post</h2>
+                <form id="new-post-form">
+                    <div class="mb-4">
+                        <label for="post-title" class="block text-ios-text text-sm font-semibold mb-2">Title</label>
+                        <input type="text" id="post-title" placeholder="A catchy title for your post..." class="w-full p-3 rounded-lg border border-ios-border bg-white/5 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-ios-text transition" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="post-content" class="block text-ios-text text-sm font-semibold mb-2">Content</label>
+                        <textarea id="post-content" rows="5" placeholder="Share your thoughts..." class="w-full p-3 rounded-lg border border-ios-border bg-white/5 focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none text-ios-text resize-y transition" required></textarea>
+                    </div>
+                    <div class="flex justify-end gap-3">
+                        <button type="button" id="cancel-post-btn" class="bg-gray-200 text-gray-700 px-5 py-2 rounded-full hover:bg-gray-300 transition">Cancel</button>
+                        <button type="submit" class="bg-blue-500 text-white px-5 py-2 rounded-full hover:bg-blue-600 transition">Post</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const postsContainer = document.getElementById('posts-container');
+        const addPostBtn = document.getElementById('add-post-btn');
+        const newPostModal = document.getElementById('new-post-modal');
+        const cancelPostBtn = document.getElementById('cancel-post-btn');
+        const newPostForm = document.getElementById('new-post-form');
+        const postTitleInput = document.getElementById('post-title');
+        const postContentInput = document.getElementById('post-content');
+
+        let posts = [
+            { id: 1, title: "Welcome to Mini Reddit!", content: "This is a simple mini Reddit clone built with HTML, CSS (Tailwind & Glassmorphism), and vanilla JS. Enjoy!", author: "admin", subreddit: "r/Welcome", upvotes: 15, comments: 3 },
+            { id: 2, title: "Building a beautiful UI with Glassmorphism", content: "Glassmorphism is a UI trend that emphasizes light or dark objects placed on top of colorful backgrounds, giving the impression of frosted glass.", author: "dev_dude", subreddit: "r/UI_Design", upvotes: 22, comments: 7 },
+            { id: 3, title: "My favorite CSS trick: backdrop-filter", content: "The `backdrop-filter` property lets you apply graphical effects like blur or color shift to the area behind an element.", author: "css_nerd", subreddit: "r/webdev", upvotes: 40, comments: 12 },
+            { id: 4, title: "Exploring the new JavaScript features", content: "ES2023 brought some interesting additions, like `toReversed()` for arrays and `Temporal` API for dates. What are your favorites?", author: "js_master", subreddit: "r/javascript", upvotes: 30, comments: 5 },
+            { id: 5, title: "Responsive design for everyone", content: "Ensuring your website looks good on all devices is crucial. Mobile-first approach combined with flexible layouts helps a lot.", author: "design_guru", subreddit: "r/frontend", upvotes: 18, comments: 2 },
+        ];
+
+        function renderPosts() {
+            postsContainer.innerHTML = ''; // Clear existing posts
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.id = `post-${post.id}`;
+                postElement.className = 'glass-card flex mb-4 p-4';
+                postElement.innerHTML = `
+                    <div class="flex flex-col items-center mr-4 text-ios-text">
+                        <button class="upvote-btn text-gray-500 hover:text-blue-500 transition" data-id="${post.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                            </svg>
+                        </button>
+                        <span class="font-bold my-1 text-base">${post.upvotes}</span>
+                        <button class="downvote-btn text-gray-500 hover:text-red-500 transition" data-id="${post.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-semibold mb-2 text-ios-text">${post.title}</h3>
+                        <p class="text-sm text-ios-text/80 mb-3">${post.content}</p>
+                        <div class="flex flex-wrap items-center text-xs text-gray-500 mt-2">
+                            <span class="mr-2 mb-1">Posted by <span class="text-blue-500 font-medium">u/${post.author}</span> in <span class="text-green-500 font-medium">${post.subreddit}</span></span>
+                            <span class="mb-1">• ${post.comments} comments</span>
+                        </div>
+                    </div>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+            addEventListeners(); // Re-attach event listeners after re-rendering
+        }
+
+        function addEventListeners() {
+            document.querySelectorAll('.upvote-btn').forEach(button => {
+                button.onclick = (e) => {
+                    const postId = parseInt(e.currentTarget.dataset.id);
+                    const post = posts.find(p => p.id === postId);
+                    if (post) {
+                        post.upvotes++;
+                        renderPosts();
+                    }
+                };
+            });
+
+            document.querySelectorAll('.downvote-btn').forEach(button => {
+                button.onclick = (e) => {
+                    const postId = parseInt(e.currentTarget.dataset.id);
+                    const post = posts.find(p => p.id === postId);
+                    if (post) {
+                        post.upvotes = Math.max(0, post.upvotes - 1); // Ensure upvotes don't go below 0
+                        renderPosts();
+                    }
+                };
+            });
+        }
+
+        // --- Modal & Form Handling ---
+        addPostBtn.addEventListener('click', () => {
+            newPostModal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden'); // Prevent scrolling body when modal is open
+            postTitleInput.focus(); // Focus on the first input field
+        });
+
+        cancelPostBtn.addEventListener('click', () => {
+            newPostModal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+            newPostForm.reset(); // Clear form fields
+        });
+
+        newPostModal.addEventListener('click', (e) => {
+            // Close modal if clicked on the overlay, not the modal content itself
+            if (e.target === newPostModal) {
+                newPostModal.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+                newPostForm.reset();
+            }
+        });
+
+        newPostForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent default form submission
+            const newPost = {
+                id: posts.length > 0 ? Math.max(...posts.map(p => p.id)) + 1 : 1, // Generate unique ID
+                title: postTitleInput.value,
+                content: postContentInput.value,
+                author: "you", // Default author for new posts
+                subreddit: "r/NewPosts", // Default subreddit
+                upvotes: 1, // Start with 1 upvote
+                comments: 0
+            };
+            posts.unshift(newPost); // Add new post to the beginning of the array
+            renderPosts();
+            newPostModal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+            newPostForm.reset(); // Clear form fields
+        });
+
+        // Initial render of posts when the page loads
+        renderPosts();
+    </script>
+</body>
+</html>

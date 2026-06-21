@@ -1,0 +1,459 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  nickname  String?
+  password  String?
+  avatar    String?
+  siteAvatar String?
+  bio       String?
+  relationshipStatus String?
+  isOnline  Boolean  @default(false)
+  lastSeen  DateTime @default(now())
+  notificationsEnabled Boolean @default(true)
+  isDeveloper Boolean @default(false)
+  isAdmin   Boolean  @default(false) // Admin role for admin dashboard
+  followersCount Int @default(0)
+  followingCount Int @default(0)
+  friendsCount Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // OAuth fields
+  githubId String? @unique
+  googleId String? @unique
+
+  messages      Message[]
+  chatMembers   ChatMember[]
+  messageStatus MessageStatus[]
+  contacts      Contact[]     @relation("UserContacts")
+  contactOf     Contact[]     @relation("ContactOf")
+  apps          App[]
+  apiTokens     ApiToken[]
+  sentFriendRequests    Friend[] @relation("SentFriendRequests")
+  receivedFriendRequests Friend[] @relation("ReceivedFriendRequests")
+  stories       Story[]
+  followers     Follower[] @relation("UserFollowers")
+  following     Follower[] @relation("UserFollowing")
+  blockedUsers  Block[] @relation("UserBlocks")
+  blockedBy     Block[] @relation("BlockedBy")
+  appData       AppData[]
+  payments      Payment[]
+  balance       DeveloperBalance?
+  withdrawals   Withdrawal[]
+  notifications Notification[]
+  sentNotifications Notification[] @relation("NotificationSender")
+  wallet        Wallet?
+  transactions  Transaction[]
+  sparksPurchases SparksPurchase[]
+  createdAdmins User[] @relation("AdminCreator")
+  createdBy    User? @relation("AdminCreator", fields: [createdByAdminId], references: [id])
+  createdByAdminId Int?
+}
+
+model Contact {
+  id        String   @id @default(uuid())
+  userId    Int
+  contactId Int
+  createdAt DateTime @default(now())
+
+  user    User @relation("UserContacts", fields: [userId], references: [id])
+  contact User @relation("ContactOf", fields: [contactId], references: [id])
+
+  @@unique([userId, contactId])
+}
+
+// Friend system (like Instagram)
+model Friend {
+  id        String   @id @default(uuid())
+  senderId  Int
+  receiverId Int
+  status    String   @default("PENDING") // PENDING, ACCEPTED, REJECTED, BLOCKED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sender   User @relation("SentFriendRequests", fields: [senderId], references: [id])
+  receiver User @relation("ReceivedFriendRequests", fields: [receiverId], references: [id])
+
+  @@unique([senderId, receiverId])
+  @@index([status])
+}
+
+model Chat {
+  id        String   @id @default(uuid())
+  name      String?
+  handle    String?  @unique // @sitename for groups
+  isGroup   Boolean  @default(false)
+  isPublic  Boolean  @default(false) // For public groups
+  memberLimit Int @default(200000) // 200K members like Telegram
+  appId     String?  // For app chats (like Telegram Mini Apps)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages    Message[]
+  chatMembers ChatMember[]
+  app         App?     @relation(fields: [appId], references: [id])
+}
+
+model ChatMember {
+  id        String   @id @default(uuid())
+  chatId    String
+  userId    Int
+  role      String   @default("MEMBER") // ADMIN, MEMBER
+  joinedAt  DateTime @default(now())
+
+  chat Chat @relation(fields: [chatId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([chatId, userId])
+}
+
+model Message {
+  id        String      @id @default(uuid())
+  content   String?
+  type      String      @default("TEXT") // TEXT, IMAGE, VIDEO, DOCUMENT, STICKER
+  fileUrl   String?
+  senderId  Int
+  chatId    String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  sender   User            @relation(fields: [senderId], references: [id])
+  chat     Chat            @relation(fields: [chatId], references: [id])
+  statuses MessageStatus[]
+}
+
+model MessageStatus {
+  id        String   @id @default(uuid())
+  messageId String
+  userId    Int
+  status    String   @default("SENT") // SENT, DELIVERED, READ
+  updatedAt DateTime @updatedAt
+
+  message Message @relation(fields: [messageId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([messageId, userId])
+}
+
+// Mini Apps (like Telegram Mini Apps but web-based)
+model App {
+  id           String   @id @default(uuid())
+  name         String
+  handle       String   @unique // @sitename for apps
+  description  String?
+  icon         String?
+  url          String?  // External URL for EXTERNAL type apps
+  webhookUrl   String?  // Webhook URL for EXTERNAL apps (like Telegram bots)
+  userId       Int
+  type         AppType  @default(HOSTED) // HOSTED (static files on Sparkaph) or EXTERNAL (your server)
+  status       String   @default("DRAFT") // DRAFT, PUBLISHED, ARCHIVED
+  isPublic     Boolean  @default(false)
+  views        Int      @default(0)
+  isPaid       Boolean  @default(false) // Paid app
+  price        Float    @default(0) // Price in Sparks
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user        User        @relation(fields: [userId], references: [id])
+  deployments Deployment[]
+  apiTokens   ApiToken[]
+  chats       Chat[]
+  appData     AppData[]
+  payments    Payment[]
+
+  @@index([handle])
+}
+
+enum AppType {
+  HOSTED
+  EXTERNAL
+}
+
+// App deployments (for hosting)
+model Deployment {
+  id           String   @id @default(uuid())
+  appId        String
+  version      Int
+  zipPath      String?  // For frontend ZIP uploads
+  repoUrl      String?  // For full-stack repos
+  branch       String?  // For full-stack repos
+  status       String   @default("PENDING") // PENDING, BUILDING, DEPLOYED, FAILED
+  url          String?  // sparkaph.com/sitename
+  buildLog     String?  @db.Text
+  errorType    String?  // ZIP_NOT_FOUND, EXTRACTION_FAILED, NO_INDEX_HTML, etc.
+  errorMessage String?  @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  app App @relation(fields: [appId], references: [id])
+}
+
+// API Tokens for full-stack developers (like Telegram Bot API)
+model ApiToken {
+  id        String   @id @default(uuid())
+  name      String
+  token     String   @unique
+  appId     String?
+  userId    Int
+  scopes    String[] // e.g., ["read", "write", "deploy"]
+  lastUsed  DateTime?
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+
+  app  App?  @relation(fields: [appId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([token])
+}
+
+// Stories (like Instagram)
+model Story {
+  id        String   @id @default(uuid())
+  userId    Int
+  mediaUrl  String
+  type      String   @default("IMAGE") // IMAGE, VIDEO
+  caption   String?
+  createdAt DateTime @default(now())
+  expiresAt DateTime // Stories expire after 24h
+
+  user User @relation(fields: [userId], references: [id])
+  viewers StoryViewer[]
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model StoryViewer {
+  id        String   @id @default(uuid())
+  storyId   String
+  userId    Int
+  viewedAt  DateTime @default(now())
+
+  story Story @relation(fields: [storyId], references: [id])
+
+  @@unique([storyId, userId])
+}
+
+// Follower system (like Instagram)
+model Follower {
+  id        String   @id @default(uuid())
+  followerId Int
+  followingId Int
+  createdAt DateTime @default(now())
+
+  follower  User @relation("UserFollowers", fields: [followerId], references: [id])
+  following User @relation("UserFollowing", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
+  @@index([followingId])
+}
+
+// Block system (ЧС - черный список)
+model Block {
+  id        String   @id @default(uuid())
+  blockerId Int
+  blockedId Int
+  createdAt DateTime @default(now())
+
+  blocker User @relation("UserBlocks", fields: [blockerId], references: [id])
+  blocked User @relation("BlockedBy", fields: [blockedId], references: [id])
+
+  @@unique([blockerId, blockedId])
+}
+
+// Notification system
+model Notification {
+  id        String   @id @default(uuid())
+  userId    Int
+  type      String   // FOLLOW, MESSAGE, MENTION, etc.
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  fromUserId Int?
+  createdAt DateTime @default(now())
+
+  user     User @relation(fields: [userId], references: [id])
+  fromUser User? @relation("NotificationSender", fields: [fromUserId], references: [id])
+
+  @@index([userId])
+  @@index([isRead])
+}
+
+model AppData {
+  id        String   @id @default(uuid())
+  appId     String
+  userId    Int
+  key       String
+  value     String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  app  App  @relation(fields: [appId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([appId, userId, key])
+  @@index([appId])
+  @@index([userId])
+}
+
+// Payment system
+model Payment {
+  id              String   @id @default(uuid())
+  userId          Int
+  appId           String
+  amount          Float
+  platformFee     Float    // 15%
+  developerAmount Float    // 85%
+  currency        String   @default("RUB")
+  status          String   @default("PENDING") // PENDING, COMPLETED, FAILED, REFUNDED
+  paymentMethod   String   @default("BOOSTY") // BOOSTY, CARD, CRYPTO
+  externalId      String?  // Boosty payment ID
+  description     String?
+  metadata        String?  @db.Text // JSON data
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  app  App  @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([appId])
+  @@index([status])
+}
+
+model DeveloperBalance {
+  id              String   @id @default(uuid())
+  userId          Int      @unique
+  availableAmount Float    @default(0) // Доступно для вывода
+  pendingAmount   Float    @default(0) // Ожидает подтверждения
+  totalEarned     Float    @default(0) // Всего заработано
+  currency        String   @default("RUB")
+  boostyUsername  String?  // Boosty аккаунт для выплат
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Withdrawal {
+  id        String   @id @default(uuid())
+  userId    Int
+  amount    Float
+  method    String   // BOOSTY, CARD, CRYPTO
+  status    String   @default("PENDING") // PENDING, PROCESSING, COMPLETED, REJECTED
+  details   String?  @db.Text // JSON: account details
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+}
+
+// Sparks Currency System
+model Wallet {
+  id              String   @id @default(uuid())
+  userId          Int      @unique
+  balance         Float    @default(0) // Sparks balance
+  totalEarned     Float    @default(0) // Total Sparks earned
+  totalSpent      Float    @default(0) // Total Sparks spent
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  userId      Int
+  type        String   // PURCHASE, PAYMENT, REFUND, TRANSFER, REWARD
+  amount      Float    // Amount in Sparks
+  description String
+  metadata    String?  @db.Text // JSON: additional data (appId, etc.)
+  status      String   @default("COMPLETED") // COMPLETED, PENDING, FAILED
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model SparksPurchase {
+  id              String   @id @default(uuid())
+  userId          Int
+  sparksAmount    Float    // Amount of Sparks purchased
+  realAmount      Float    // Amount in real currency
+  currency        String   // USD, KZT, RUB, etc.
+  paymentMethod   String   // CARD, KASPI, PAYPAL, etc.
+  status          String   @default("PENDING") // PENDING, COMPLETED, FAILED, REFUNDED
+  paymentProvider String?  // Stripe, Kaspi, etc.
+  externalId      String?  // External payment ID
+  metadata        String?  @db.Text // JSON: payment details
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+}
+
+// Statistics tracking for admin dashboard
+model DailyStats {
+  id        String   @id @default(uuid())
+  date      DateTime @unique
+  dau       Int      @default(0) // Daily Active Users
+  newUsers  Int      @default(0) // New registrations
+  messages  Int      @default(0) // Messages sent
+  apps      Int      @default(0) // Apps created
+  payments  Int      @default(0) // Payments made
+  revenue   Float    @default(0) // Total revenue
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([date])
+}
+
+model WeeklyStats {
+  id        String   @id @default(uuid())
+  week      Int      @unique // Week number
+  year      Int
+  wau       Int      @default(0) // Weekly Active Users
+  newUsers  Int      @default(0)
+  messages  Int      @default(0)
+  apps      Int      @default(0)
+  payments  Int      @default(0)
+  revenue   Float    @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([week, year])
+}
+
+model MonthlyStats {
+  id        String   @id @default(uuid())
+  month     Int      @unique // Month number
+  year      Int
+  mau       Int      @default(0) // Monthly Active Users
+  newUsers  Int      @default(0)
+  messages  Int      @default(0)
+  apps      Int      @default(0)
+  payments  Int      @default(0)
+  revenue   Float    @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([month, year])
+}
