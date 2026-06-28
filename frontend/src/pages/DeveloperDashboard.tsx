@@ -31,6 +31,9 @@ interface App {
   status: string;
   isPublic: boolean;
   views: number;
+  url?: string;
+  webhookUrl?: string;
+  userId?: string;
   deployments: Deployment[];
   apiTokens: ApiToken[];
 }
