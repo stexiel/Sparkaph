@@ -17,7 +17,15 @@ export default defineConfig({
         changeOrigin: true,
         // Don't proxy API requests
         bypass: (req) => {
-          if (req.url?.startsWith('/api') || req.url?.startsWith('/uploads')) {
+          // Don't proxy API requests, uploads, or static assets
+          if (req.url?.startsWith('/api') || 
+              req.url?.startsWith('/uploads') ||
+              req.url?.startsWith('/favicon') ||
+              req.url?.includes('.png') ||
+              req.url?.includes('.jpg') ||
+              req.url?.includes('.jpeg') ||
+              req.url?.includes('.svg') ||
+              req.url?.includes('.ico')) {
             return null;
           }
           // Proxy app requests to backend
