@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   username  String   @unique
   nickname  String?
   password  String?
@@ -57,13 +57,13 @@ model User {
   sparksPurchases SparksPurchase[]
   createdAdmins User[] @relation("AdminCreator")
   createdBy    User? @relation("AdminCreator", fields: [createdByAdminId], references: [id])
-  createdByAdminId Int?
+  createdByAdminId String?
 }
 
 model Contact {
   id        String   @id @default(uuid())
-  userId    Int
-  contactId Int
+  userId    String
+  contactId String
   createdAt DateTime @default(now())
 
   user    User @relation("UserContacts", fields: [userId], references: [id])
@@ -75,8 +75,8 @@ model Contact {
 // Friend system (like Instagram)
 model Friend {
   id        String   @id @default(uuid())
-  senderId  Int
-  receiverId Int
+  senderId  String
+  receiverId String
   status    String   @default("PENDING") // PENDING, ACCEPTED, REJECTED, BLOCKED
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -107,7 +107,7 @@ model Chat {
 model ChatMember {
   id        String   @id @default(uuid())
   chatId    String
-  userId    Int
+  userId    String
   role      String   @default("MEMBER") // ADMIN, MEMBER
   joinedAt  DateTime @default(now())
 
@@ -122,7 +122,7 @@ model Message {
   content   String?
   type      String      @default("TEXT") // TEXT, IMAGE, VIDEO, DOCUMENT, STICKER
   fileUrl   String?
-  senderId  Int
+  senderId  String
   chatId    String
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
@@ -135,7 +135,7 @@ model Message {
 model MessageStatus {
   id        String   @id @default(uuid())
   messageId String
-  userId    Int
+  userId    String
   status    String   @default("SENT") // SENT, DELIVERED, READ
   updatedAt DateTime @updatedAt
 
@@ -154,7 +154,7 @@ model App {
   icon         String?
   url          String?  // External URL for EXTERNAL type apps
   webhookUrl   String?  // Webhook URL for EXTERNAL apps (like Telegram bots)
-  userId       Int
+  userId       String
   type         AppType  @default(HOSTED) // HOSTED (static files on Sparkaph) or EXTERNAL (your server)
   status       String   @default("DRAFT") // DRAFT, PUBLISHED, ARCHIVED
   isPublic     Boolean  @default(false)
@@ -204,7 +204,7 @@ model ApiToken {
   name      String
   token     String   @unique
   appId     String?
-  userId    Int
+  userId    String
   scopes    String[] // e.g., ["read", "write", "deploy"]
   lastUsed  DateTime?
   expiresAt DateTime?
@@ -219,7 +219,7 @@ model ApiToken {
 // Stories (like Instagram)
 model Story {
   id        String   @id @default(uuid())
-  userId    Int
+  userId    String
   mediaUrl  String
   type      String   @default("IMAGE") // IMAGE, VIDEO
   caption   String?
@@ -236,7 +236,7 @@ model Story {
 model StoryViewer {
   id        String   @id @default(uuid())
   storyId   String
-  userId    Int
+  userId    String
   viewedAt  DateTime @default(now())
 
   story Story @relation(fields: [storyId], references: [id])
@@ -247,8 +247,8 @@ model StoryViewer {
 // Follower system (like Instagram)
 model Follower {
   id        String   @id @default(uuid())
-  followerId Int
-  followingId Int
+  followerId String
+  followingId String
   createdAt DateTime @default(now())
 
   follower  User @relation("UserFollowers", fields: [followerId], references: [id])
@@ -261,8 +261,8 @@ model Follower {
 // Block system (ЧС - черный список)
 model Block {
   id        String   @id @default(uuid())
-  blockerId Int
-  blockedId Int
+  blockerId String
+  blockedId String
   createdAt DateTime @default(now())
 
   blocker User @relation("UserBlocks", fields: [blockerId], references: [id])
@@ -274,12 +274,12 @@ model Block {
 // Notification system
 model Notification {
   id        String   @id @default(uuid())
-  userId    Int
+  userId    String
   type      String   // FOLLOW, MESSAGE, MENTION, etc.
   title     String
   message   String
   isRead    Boolean  @default(false)
-  fromUserId Int?
+  fromUserId String?
   createdAt DateTime @default(now())
 
   user     User @relation(fields: [userId], references: [id])
@@ -292,7 +292,7 @@ model Notification {
 model AppData {
   id        String   @id @default(uuid())
   appId     String
-  userId    Int
+  userId    String
   key       String
   value     String   @db.Text
   createdAt DateTime @default(now())
@@ -346,7 +346,7 @@ model DeveloperBalance {
 
 model Withdrawal {
   id        String   @id @default(uuid())
-  userId    Int
+  userId    String
   amount    Float
   method    String   // BOOSTY, CARD, CRYPTO
   status    String   @default("PENDING") // PENDING, PROCESSING, COMPLETED, REJECTED
