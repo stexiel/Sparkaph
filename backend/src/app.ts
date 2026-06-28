@@ -68,28 +68,32 @@ const setupRedisAdapter = async () => {
 };
 
 const setupSocketHandlers = () => {
-  // Socket.io connection handler
-  const onlineUsers = new Map<string, string>(); // socketId -> userId
+  // Socket.io connection handler - use userId -> socketId map for O(1) lookups
+  const onlineUsers = new Map<string, Set<string>>(); // userId -> Set of socketIds
 
   io.on("connection", (socket) => {
     logger.info({ socketId: socket.id }, "User connected");
 
     socket.on("setup", async (userId: string) => {
       socket.join(userId);
-      onlineUsers.set(socket.id, userId);
-      try {
-        await prisma.user.update({
-          where: { id: userId },
-          data: { isOnline: true },
-        });
-        socket.broadcast.emit("user_online", userId);
-        logger.info(
-          { userId, socketId: socket.id },
-          "User set up and marked online",
-        );
-      } catch (error) {
-        logger.error({ error, userId }, "Error updating user status");
+      
+      // Add socket to user's socket set
+      if (!onlineUsers.has(userId)) {
+        onlineUsers.set(userId, new Set());
+        // Only mark online if this is the first socket for this user
+        try {
+          await prisma.user.update({
+            where: { id: userId },
+            data: { isOnline: true },
+          });
+          socket.broadcast.emit("user_online", userId);
+          logger.info({ userId }, "User marked online");
+        } catch (error) {
+          logger.error({ error, userId }, "Error updating user status");
+        }
       }
+      onlineUsers.get(userId)!.add(socket.id);
+      logger.info({ userId, socketId: socket.id }, "User set up");
     });
 
     socket.on("join_chat", (chatId) => {
@@ -100,12 +104,12 @@ const setupSocketHandlers = () => {
     // WebRTC Signaling
     socket.on("call_user", ({ userToCall, signalData, from, name }) => {
       const callerSocketId = socket.id;
-      const userSocketId = [...onlineUsers.entries()].find(
-        ([key, val]) => val === userToCall,
-      )?.[0];
-
-      if (userSocketId) {
-        io.to(userSocketId).emit("call_user", {
+      const userSockets = onlineUsers.get(userToCall);
+      
+      if (userSockets && userSockets.size > 0) {
+        // Send to any socket of the target user
+        const targetSocketId = userSockets.values().next().value;
+        io.to(targetSocketId).emit("call_user", {
           signal: signalData,
           from,
           name,
@@ -121,37 +125,42 @@ const setupSocketHandlers = () => {
     });
 
     socket.on("end_call", ({ to }) => {
-      const userSocketId = [...onlineUsers.entries()].find(
-        ([key, val]) => val === to,
-      )?.[0];
-      if (userSocketId) {
-        io.to(userSocketId).emit("call_ended");
+      const userSockets = onlineUsers.get(to);
+      if (userSockets && userSockets.size > 0) {
+        const targetSocketId = userSockets.values().next().value;
+        io.to(targetSocketId).emit("call_ended");
         logger.info({ to }, "Call ended");
       }
     });
 
     socket.on("disconnect", async () => {
-      const userId = onlineUsers.get(socket.id);
-      if (userId) {
-        try {
-          await prisma.user.update({
-            where: { id: userId },
-            data: { isOnline: false, lastSeen: new Date() },
-          });
-          socket.broadcast.emit("user_offline", userId);
-          onlineUsers.delete(socket.id);
-          logger.info(
-            { userId, socketId: socket.id },
-            "User disconnected and marked offline",
-          );
-        } catch (error) {
-          logger.error(
-            { error, userId },
-            "Error updating user status on disconnect",
-          );
+      // Find which user this socket belonged to
+      let disconnectedUserId: string | null = null;
+      
+      for (const [userId, sockets] of onlineUsers.entries()) {
+        if (sockets.has(socket.id)) {
+          sockets.delete(socket.id);
+          disconnectedUserId = userId;
+          
+          // If no more sockets for this user, mark offline
+          if (sockets.size === 0) {
+            onlineUsers.delete(userId);
+            try {
+              await prisma.user.update({
+                where: { id: userId },
+                data: { isOnline: false, lastSeen: new Date() },
+              });
+              socket.broadcast.emit("user_offline", userId);
+              logger.info({ userId }, "User marked offline");
+            } catch (error) {
+              logger.error({ error, userId }, "Error updating user status on disconnect");
+            }
+          }
+          break;
         }
       }
-      logger.info({ socketId: socket.id }, "User disconnected");
+      
+      logger.info({ socketId: socket.id, userId: disconnectedUserId }, "User disconnected");
     });
   });
 };

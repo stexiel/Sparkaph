@@ -4,13 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node clear-migrations.js && npx prisma db push --accept-data-loss --skip-generate && node dist/index.js",
+    "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
     "build": "tsc || echo 'Build completed with errors'",
     "test": "echo \"Error: no test specified\" && exit 1",
     "create-admin": "ts-node scripts/createFirstAdmin.ts",
     "update-stats": "ts-node scripts/updateStats.ts",
-    "clear-migrations": "node clear-migrations.js"
+    "clear-migrations": "node clear-migrations.js",
+    "db:push": "npx prisma db push --accept-data-loss --skip-generate"
   },
   "keywords": [],
   "author": "",
