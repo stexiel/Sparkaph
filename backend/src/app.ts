@@ -170,6 +170,36 @@ setupRedisAdapter();
 app.use(cors());
 app.use(express.json());
 app.use(requestLogger);
+
+// Serve static files from CDN (GitHub Pages) with fallback to local
+const STATIC_ASSETS_URL = process.env.STATIC_ASSETS_URL || 'https://stexiel.github.io/sparkaph-assets';
+app.use('/static', async (req, res, next) => {
+  try {
+    const assetPath = req.path;
+    const remoteUrl = `${STATIC_ASSETS_URL}${assetPath}`;
+    
+    // Try to fetch from CDN
+    const response = await fetch(remoteUrl);
+    if (response.ok) {
+      const contentType = response.headers.get('content-type') || 'application/octet-stream';
+      const buffer = await response.arrayBuffer();
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year cache
+      res.send(Buffer.from(buffer));
+      return;
+    }
+    
+    // Fallback to local public folder
+    next();
+  } catch (error) {
+    // Fallback to local on error
+    next();
+  }
+});
+
+// Local static files fallback
+app.use('/static', express.static(path.join(__dirname, '../frontend/public')));
+
 app.use("/api/auth", authRoutes);
 app.use("/api/oauth", oauthRoutes);
 app.use("/api/chats", chatRoutes);
