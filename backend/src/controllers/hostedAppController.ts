@@ -112,6 +112,45 @@ export const serveHostedApp = async (req: AuthRequest, res: Response) => {
       }
     }
 
+    // Determine file type and set appropriate headers
+    const downloadExtensions = ['.xlsx', '.xls', '.csv', '.pdf', '.zip', '.rar', '.tar', '.gz'];
+    const shouldDownload = downloadExtensions.some(ext => filePath.toLowerCase().endsWith(ext));
+
+    // MIME types for common file types
+    const mimeTypes: { [key: string]: string } = {
+      '.png': 'image/png',
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.gif': 'image/gif',
+      '.svg': 'image/svg+xml',
+      '.webp': 'image/webp',
+      '.ico': 'image/x-icon',
+      '.css': 'text/css',
+      '.js': 'application/javascript',
+      '.json': 'application/json',
+      '.woff': 'font/woff',
+      '.woff2': 'font/woff2',
+      '.ttf': 'font/ttf',
+      '.eot': 'application/vnd.ms-fontobject',
+      '.mp4': 'video/mp4',
+      '.webm': 'video/webm',
+      '.mp3': 'audio/mpeg',
+      '.wav': 'audio/wav',
+    };
+
+    const ext = path.extname(requestedFile).toLowerCase();
+    const mimeType = mimeTypes[ext];
+
+    if (shouldDownload) {
+      // Set headers for file download
+      const fileName = path.basename(requestedFile);
+      res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(fileName)}"`);
+      res.setHeader('Content-Type', mimeType || 'application/octet-stream');
+    } else if (mimeType) {
+      // Set correct MIME type for display
+      res.setHeader('Content-Type', mimeType);
+    }
+
     // Serve the file
     res.sendFile(requestedFile);
   } catch (error) {

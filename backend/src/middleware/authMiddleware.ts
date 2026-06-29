@@ -11,6 +11,8 @@ export interface AuthRequest extends Request {
   body: any;
   params: any;
   query: any;
+  path: string;
+  headers: any;
 }
 
 export type Response = ExpressResponse<any, Record<string, any>>;
